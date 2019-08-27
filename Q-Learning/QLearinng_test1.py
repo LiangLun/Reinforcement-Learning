@@ -11,7 +11,7 @@ import time
 
 N_STATES = 6 # 线段的长度
 ACTIONS = ["left","right"] # 探索者可以选择的动作
-EPSILON = 0.9 # 贪婪度 greedy
+EPSILON = 0.4 # 贪婪度 greedy
 ALPHA = 0.1 # 学习率
 GAMMA = 0.9 # 奖励递减值
 MAX_EPISODES = 13 # 最大的回合数
@@ -36,10 +36,10 @@ def build_q_table(n_states, actions):
 5   0.0    0.0
 """
 
-# 定义action,用greedy策略选择动作
+# 定义action,用e-greedy策略选择动作，以1-e的概率贪婪地选择最大行为价值的行为，e的概率随机选择
 def choose_action(state, q_table):
     state_actions = q_table.iloc[state, :] # 选出这个state的所有action值
-    if(np.random.uniform()>EPSILON) or (state_actions.all() == 0): # 非贪婪 or 或者这个 state 还没有探索过
+    if(np.random.uniform() < EPSILON) or (state_actions.all() == 0): # 非贪婪 or 或者这个 state 还没有探索过
         action_name = np.random.choice(ACTIONS)
     else:
         action_name = state_actions.argmax() # 在贪婪情况下
